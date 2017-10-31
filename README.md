@@ -37,4 +37,4 @@ The helper functions (```featureFormat()``` and ```targetFeatureSplit()``` in __
 
 The folder __My works__ contains the jupyter noptebook files which show the analysis done on the dataset.  
 * ```My works/Dataset qtns/explore_enron_data_jn.ipynb``` - includes the initial analysis done on the datset.
-* 
+* ```My works/regression/finance_regression_jn.ipynb```  - Regression analysis done on variables Bonus, salary and long_term_incentive.
