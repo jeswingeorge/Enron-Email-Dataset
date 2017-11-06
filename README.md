@@ -36,9 +36,11 @@ The helper functions (```featureFormat()``` and ```targetFeatureSplit()``` in __
 ***
 
 The folder __My works__ contains the jupyter noptebook files which show the analysis done on the dataset.  
-* ```My works/Dataset qtns/explore_enron_data_jn.ipynb``` - includes the initial analysis done on the datset.
-* ```My works/regression/finance_regression_jn.ipynb``` - includes the regression analysis on bonus, salary and long_term_incentive variables of the datset.
-* ```My works/outliers``` - includes codes and python functions used to remove and check for the outliers
+* ```My works/1.Dataset qtns/explore_enron_data_jn.ipynb``` - includes the initial analysis done on the datset.
+* ```My works/2.regression/finance_regression_jn.ipynb``` - includes the regression analysis on bonus, salary and long_term_incentive variables of the datset.  
+* ```My works/3.outliers``` - includes codes and python functions used to remove and check for the outliers.  
+* ```My works/4. KMeans clustering_feature_scaling``` Deals with feature scaling and clustering.  
+* ```My works/5. Text Learning``` itself contains 2 folders - ```1.tools``` having a .ipynb file showing application of user-defined function ```parseOutText()``` and ```2.text learning``` having __vectorize_text_jn.ipynb__ file along with ```.py``` file for function ```parseOutText()```.
 
 ***
 
