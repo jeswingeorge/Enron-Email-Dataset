@@ -40,7 +40,8 @@ The folder __My works__ contains the jupyter noptebook files which show the anal
 * ```My works/2.regression/finance_regression_jn.ipynb``` - includes the regression analysis on bonus, salary and long_term_incentive variables of the datset.  
 * ```My works/3.outliers``` - includes codes and python functions used to remove and check for the outliers.  
 * ```My works/4. KMeans clustering_feature_scaling``` Deals with feature scaling and clustering.  
-* ```My works/5. Text Learning``` itself contains 2 folders - ```1.tools``` having a .ipynb file showing application of user-defined function ```parseOutText()``` and ```2.text learning``` having __vectorize_text_jn.ipynb__ file along with ```.py``` file for function ```parseOutText()```.
+* ```My works/5. Text Learning``` itself contains 2 folders - ```1.tools``` having a .ipynb file showing application of user-defined function ```parseOutText()``` and ```2.text learning``` having _vectorize_text_jn.ipynb_ file along with ```.py``` file for function ```parseOutText()```.
+* ```My works/6. Feature Selection``` In this chapter, the miniproject was to remove the _signature word_ present in all emails.  
 
 ***
 
