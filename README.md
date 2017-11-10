@@ -43,6 +43,8 @@ The folder __My works__ contains the jupyter noptebook files which show the anal
 * ```My works/5. Text Learning``` itself contains 2 folders - ```1.tools``` having a .ipynb file showing application of user-defined function ```parseOutText()``` and ```2.text learning``` having _vectorize_text_jn.ipynb_ file along with ```.py``` file for function ```parseOutText()```.
 * ```My works/6. Feature Selection``` In this chapter, the miniproject was to remove the _signature word_ present in all emails.  
 * ```My works/7. PCA``` Finished study on PCA.
+* ``````My works/8. Validation`````` 
+* ```My works/9. Evaluation metrics``` : 
 
 ***
 
