@@ -16,8 +16,11 @@ from time import time
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
-features_list = ['poi','salary', 'bonus', 'long_term_incentive', 'bonus-to-salary_ratio', 'expenses', 'restricted_stock', 'deferred_income', 'fraction_mail_from_poi', 'total_payments', 'other', 'fraction_mail_to_poi',
-     'from_poi_to_this_person']
+features_list = ['poi', 'salary', 'bonus', 'long_term_incentive', 'bonus-to-salary_ratio', 'deferral_payments', 'expenses',
+                 'restricted_stock_deferred', 'restricted_stock', 'deferred_income','fraction_mail_from_poi', 'total_payments',
+                 'other', 'fraction_mail_to_poi', 'from_poi_to_this_person', 'from_this_person_to_poi', 'to_messages',
+                 'from_messages', 'shared_receipt_with_poi', 'loan_advances', 'director_fees', 'exercised_stock_options',
+                'total_stock_value', 'restricted_stock']
 
 ### Load the dictionary containing the dataset
 with open("final_project_dataset.pkl", "r") as data_file:
@@ -70,7 +73,6 @@ features_train, features_test, labels_train, labels_test = cross_validation.trai
 
 # Stratified ShuffleSplit cross-validator
 from sklearn.model_selection import StratifiedShuffleSplit
-# Dont use 'labels' in the input of StratifiedShuffleSplit
 sss = StratifiedShuffleSplit(n_splits=1000, test_size=0.3,random_state = 42)
 
 # Importing modules for feature scaling and selection
@@ -85,38 +87,38 @@ scaler = MinMaxScaler()
 skb = SelectKBest(f_classif)
 pca = PCA()
 
-# Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.neighbors import KNeighborsClassifier
-clf_knn = KNeighborsClassifier()
-
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
 ### function. Because of the small size of the dataset, the script uses
 ### stratified shuffle split cross validation. For more info:
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
-pipeline = Pipeline(steps = [("scaling", scaler), ("SKB", skb), ("PCA",pca), ("knn",clf_knn)])
-param_grid = {"SKB__k":[11],
-              "PCA__n_components":[2],
-              "PCA__whiten":[True],
-              "knn__n_neighbors": [3]
-              }
 
-clf = GridSearchCV(pipeline, param_grid, verbose = 1, cv = sss, scoring = 'f1', error_score = 0)
-#clf = clf.best_estimator_
+from sklearn.naive_bayes import GaussianNB
+clf_gnb = GaussianNB()
+
+pipeline = Pipeline(steps = [("SKB", skb), ("NaiveBayes",clf_gnb)])
+param_grid = {"SKB__k":[7,8,9,10,11,12,13,14,15,16,17,18,19]}
+
+grid = GridSearchCV(pipeline, param_grid, verbose = 0, cv = sss, scoring = 'f1')
 
 t0 = time()
-clf = clf.fit(features_train, labels_train)
+grid.fit(features, labels)
 print "training time: ", round(time()-t0, 3), "s"
 
+# best algorithm
+clf = grid.best_estimator_
+
 t0 = time()
+# refit the best algorithm:
+clf.fit(features_train, labels_train)
 prediction = clf.predict(features_test)
 print "testing time: ", round(time()-t0, 3), "s"
 
-print "Accuracy of KNN classifer is  : ",accuracy_score(labels_test, prediction)
-print "Precision of KNN classifer is : ",precision_score(prediction, labels_test)
-print "Recall of KNN classifer is    : ",recall_score(prediction, labels_test)
-print "f1-score of KNN classifer is  : ",f1_score(prediction, labels_test)
+print "Accuracy of GaussianNB classifer is  : ",accuracy_score(labels_test, prediction)
+print "Precision of GaussianNB classifer is : ",precision_score(prediction, labels_test)
+print "Recall of GaussianNB classifer is    : ",recall_score(prediction, labels_test)
+print "f1-score of GaussianNB classifer is  : ",f1_score(prediction, labels_test)
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
@@ -124,3 +126,4 @@ print "f1-score of KNN classifer is  : ",f1_score(prediction, labels_test)
 ### generates the necessary .pkl files for validating your results.
 
 dump_classifier_and_data(clf, my_dataset, features_list)
+
