@@ -18,8 +18,8 @@ In 2000, Enron was one of the largest companies in the United States. By 2002, i
 - ```poi_id.py``` file contains the basic python script for this project made by me to create the POI identifier.  
 - ```three pickle files (my_dataset.pkl, my_classifier.pkl, my_feature_list.pkl)``` will be created after running  the ```poi_id``` files and they aid the project reviewer.
 - ```tester.py``` - used by Udacity coaches along with the three pickle files to check the project submission.  
-- ```/miniproject/```` folder contains the miniprojects and assignments done during the Machine Learning course. 
-- ```Project_report``` files documents the steps and analysis done during the course of this project.
+- ```/miniproject/``` folder contains the miniprojects and assignments done during the Machine Learning course. 
+- ```Project_report```  documents the steps and analysis done during the course of this project.
 
 ***
 
