@@ -98,7 +98,7 @@ from sklearn.naive_bayes import GaussianNB
 clf_gnb = GaussianNB()
 
 pipeline = Pipeline(steps = [("SKB", skb), ("NaiveBayes",clf_gnb)])
-param_grid = {"SKB__k":[7,8,9,10,11,12,13,14,15,16,17,18,19]}
+param_grid = {"SKB__k":[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}
 
 grid = GridSearchCV(pipeline, param_grid, verbose = 0, cv = sss, scoring = 'f1')
 
@@ -126,4 +126,3 @@ print "f1-score of GaussianNB classifer is  : ",f1_score(prediction, labels_test
 ### generates the necessary .pkl files for validating your results.
 
 dump_classifier_and_data(clf, my_dataset, features_list)
-

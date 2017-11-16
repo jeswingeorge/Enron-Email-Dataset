@@ -15300,9 +15300,11 @@ Total number of features :  23
 <h3 id="2.-Feature-processing-of-the-Enron-dataset">2. Feature processing of the Enron dataset<a class="anchor-link" href="#2.-Feature-processing-of-the-Enron-dataset">&#182;</a></h3><p>Steps involved :<br>
 <strong>1. Feature scaling :</strong> though standardization (or Z-score normalization) can be an important preprocessing step for many machine learning algorithms. Standardization involves rescaling the features such that they have the properties of a standard normal distribution with a mean of zero and a standard deviation of one. Standardization of datasets is a common requirement for many machine learning estimators implemented in scikit-learn; they might behave badly if the individual features do not more or less look like standard normally distributed data: Gaussian with zero mean and unit variance.</p>
 <p>In this project i will be using <strong>MinMaxScaler</strong> which scales features to lie between zero and one. MinMaxScaler transforms features by scaling each feature to a given range. This estimator scales and translates each feature individually such that it is in the given range on the training set, i.e. between zero and one.</p>
+<p>In this project i have used feature scaling only for thise algorithms that use distance metrics (eg : KNN) in order to avoid loss of information.</p>
 <p><strong>2. Feature Selection :</strong> feature selection/dimensionality reduction on sample sets is essential to improve estimators’ accuracy scores or to boost their performance on very high-dimensional datasets. Univariate feature selection works by selecting the best features based on univariate statistical tests. It can be seen as a preprocessing step to an estimator.</p>
 <p>In this project i will be using <strong>SelectKBest</strong> function to find the K best or high-scoring features. Objects of these function take as input a scoring function that returns univariate scores and p-values. Here <strong>f_classif</strong> is used as scoring function. The f_classif function computes the ANOVA F-value between labels and features for classification tasks.</p>
 <p><strong>3. Dimensionality Reduction using PCA :</strong> PCA is used to decompose a multivariate dataset in a set of successive orthogonal components that explain a maximum amount of the variance. In scikit-learn, PCA is implemented as a transformer object that learns n components in its fit method, and can be used on new data to project it on these components.</p>
+<p>While doing this project i tried each algorithm using with and without PCA, after doing the feature selction. But i observed that after doing PCA the values of precision, recall and f1-score decreases by a large amount probably because of the loss of a large amount of important information which could have been used by the classifer for fitting. So i did not use it.</p>
 <p><strong>Pipeline</strong> is used to sequentially apply feature processing steps such as scaling, selection and classifcation.</p>
 <p>Machine learning aims to obtain the parameter values that gives the optimal performance. Sklearn's <strong>GridSearchCV</strong> module automates this process by performing a grid search over a range of parameter values for an estimator.</p>
 <p><strong>StratifiedShuffleSplit</strong> is used as the cross-validation method.</p>
@@ -15338,6 +15340,9 @@ Total number of features :  23
 
 <span class="c1">## 2. Feature Selection</span>
 <span class="n">skb</span> <span class="o">=</span> <span class="n">SelectKBest</span><span class="p">(</span><span class="n">f_classif</span><span class="p">)</span>
+
+<span class="c1">## 3. PCA</span>
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -15357,6 +15362,17 @@ Total number of features :  23
 </ol>
 <h4 id="Tuning-the-Algorithm">Tuning the Algorithm<a class="anchor-link" href="#Tuning-the-Algorithm">&#182;</a></h4><p>Tuning the algorithm for machine learning means to choose the best parameter values for algorithm that provides an optimized performance. If not tuned correctly the decision boundary made using the algorithm and training set data won't be able to correctly give the best prediction for test set data as chances of having high bias and high variance occurs.</p>
 <p><strong>Grid search</strong> is an approach to parameter tuning that will methodically build and evaluate a model for each combination of algorithm parameters specified in a grid.</p>
+<p>For feature scaling i have used the SelectKBest algorithm and to tune this section of feature processing to get best performance i used different values for <strong>k (Number of top features to select)</strong>.</p>
+<p>In addition to this i also gave different values to the <strong> n_components</strong> parameter of PCA. It selects the number of components to keep i.e., after getting the features deemed as important by SelectKBest. But using PCA here has lead to decrese in value of precision, recall and f1 score.</p>
+<p><strong>Parameters tuned for Decision Tree classifier : </strong></p>
+<ul>
+<li>criterion : The function to measure the quality of a split. Supported criteria are “gini” for the Gini impurity and “entropy” for the information gain.  </li>
+<li>min_samples_split : The minimum number of samples required to split an internal node.</li>
+</ul>
+<p><strong>Parameters tuned for KNN classifier : </strong></p>
+<ul>
+<li>n_neighbors : Number of neighbors to be used in the classifer. </li>
+</ul>
 
 </div>
 </div>
@@ -15372,7 +15388,7 @@ Total number of features :  23
 <span class="n">clf_dtree</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">()</span>
 
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;SKB&quot;</span><span class="p">,</span> <span class="n">skb</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;dtree&quot;</span><span class="p">,</span><span class="n">clf_dtree</span><span class="p">)])</span>
-<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;SKB__k&quot;</span><span class="p">:[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">19</span><span class="p">],</span>
+<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;SKB__k&quot;</span><span class="p">:[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">19</span><span class="p">],</span>
               <span class="s2">&quot;dtree__criterion&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;gini&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">],</span>
               <span class="s2">&quot;dtree__min_samples_split&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]}</span>
 
@@ -15413,8 +15429,8 @@ Total number of features :  23
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>training time:  76.509 s
-testing time:  0.009 s
+<pre>training time:  88.047 s
+testing time:  0.0 s
 Accuracy of DT classifer is  :  0.833333333333
 Precision of DT classifer is :  0.333333333333
 Recall of DT classifer is    :  0.4
@@ -15439,7 +15455,7 @@ f1-score of DT classifer is  :  0.363636363636
 
 <span class="n">sss</span> <span class="o">=</span> <span class="n">StratifiedShuffleSplit</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span>
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;scaling&quot;</span><span class="p">,</span> <span class="n">scaler</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;SKB&quot;</span><span class="p">,</span> <span class="n">skb</span><span class="p">),</span>  <span class="p">(</span><span class="s2">&quot;knn&quot;</span><span class="p">,</span><span class="n">clf_knn</span><span class="p">)])</span>
-<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;SKB__k&quot;</span><span class="p">:[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span> 
+<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;SKB__k&quot;</span><span class="p">:[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span> 
               <span class="s2">&quot;knn__n_neighbors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">15</span><span class="p">],</span>
               <span class="p">}</span>
 
@@ -15479,12 +15495,12 @@ f1-score of DT classifer is  :  0.363636363636
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>training time:  15.043 s
+<pre>training time:  12.584 s
 testing time:  0.0 s
-Accuracy of DT classifer is  :  0.857142857143
-Precision of DT classifer is :  0.166666666667
-Recall of DT classifer is    :  0.5
-f1-score of DT classifer is  :  0.25
+Accuracy of DT classifer is  :  0.880952380952
+Precision of DT classifer is :  0.333333333333
+Recall of DT classifer is    :  0.666666666667
+f1-score of DT classifer is  :  0.444444444444
 </pre>
 </div>
 </div>
@@ -15495,7 +15511,71 @@ f1-score of DT classifer is  :  0.25
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Classifier  4 : Gaussian Naive Bayes (GaussianNB) classifier using PCA</span>
+<span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
+<span class="n">clf_gnb</span> <span class="o">=</span> <span class="n">GaussianNB</span><span class="p">()</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;scaling&quot;</span><span class="p">,</span> <span class="n">scaler</span><span class="p">),(</span><span class="s2">&quot;SKB&quot;</span><span class="p">,</span> <span class="n">skb</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;PCA&quot;</span><span class="p">,</span><span class="n">pca</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;NaiveBayes&quot;</span><span class="p">,</span><span class="n">clf_gnb</span><span class="p">)])</span>
+<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;SKB__k&quot;</span><span class="p">:[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">],</span>   <span class="c1"># To find the number of top features to select</span>
+              <span class="s2">&quot;PCA__n_components&quot;</span><span class="p">:[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+              <span class="s2">&quot;PCA__whiten&quot;</span><span class="p">:[</span><span class="bp">True</span><span class="p">]}</span>
+
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="n">sss</span><span class="p">,</span> <span class="n">scoring</span> <span class="o">=</span> <span class="s1">&#39;f1&#39;</span><span class="p">)</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="c1">#clf = clf.fit(features_train, labels_train)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;training time: &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;s&quot;</span>
+
+<span class="c1"># Trained classifier obtained after using GridSearchCV and StratifiedShuffleSplit </span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+<span class="n">prediction</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">features_test</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;testing time: &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;s&quot;</span>
+
+<span class="k">print</span> <span class="s2">&quot;Accuracy of GaussianNB classifer (using PCA) is  : &quot;</span><span class="p">,</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">labels_test</span><span class="p">,</span> <span class="n">prediction</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;Precision of GaussianNB classifer (using PCA) is : &quot;</span><span class="p">,</span><span class="n">precision_score</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">labels_test</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;Recall of GaussianNB classifer (using PCA) is    : &quot;</span><span class="p">,</span><span class="n">recall_score</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">labels_test</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;f1-score of GaussianNB classifer (using PCA) is  : &quot;</span><span class="p">,</span><span class="n">f1_score</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">labels_test</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>training time:  2.463 s
+testing time:  0.0 s
+Accuracy of GaussianNB classifer (using PCA) is  :  0.880952380952
+Precision of GaussianNB classifer (using PCA) is :  0.333333333333
+Recall of GaussianNB classifer (using PCA) is    :  0.666666666667
+f1-score of GaussianNB classifer (using PCA) is  :  0.444444444444
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">## Classifier 3 : Gaussian Naive Bayes (GaussianNB) classifier</span>
@@ -15504,7 +15584,7 @@ f1-score of DT classifer is  :  0.25
 <span class="n">clf_gnb</span> <span class="o">=</span> <span class="n">GaussianNB</span><span class="p">()</span>
 
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;SKB&quot;</span><span class="p">,</span> <span class="n">skb</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;NaiveBayes&quot;</span><span class="p">,</span><span class="n">clf_gnb</span><span class="p">)])</span>
-<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;SKB__k&quot;</span><span class="p">:[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">19</span><span class="p">]}</span>
+<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;SKB__k&quot;</span><span class="p">:[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">19</span><span class="p">]}</span>
 
 <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="n">sss</span><span class="p">,</span> <span class="n">scoring</span> <span class="o">=</span> <span class="s1">&#39;f1&#39;</span><span class="p">)</span>
 
@@ -15541,7 +15621,7 @@ f1-score of DT classifer is  :  0.25
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>training time:  0.829 s
+<pre>training time:  0.837 s
 testing time:  0.0 s
 Accuracy of GaussianNB classifer is  :  0.833333333333
 Precision of GaussianNB classifer is :  0.5
@@ -15559,14 +15639,15 @@ f1-score of GaussianNB classifer is  :  0.461538461538
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Precision, recall and f1 values provided by GaussianNB classifer is better than given by the other two classifying algorithms used.</p>
+<p>Gaussian Naive bayes classifier without using PCA has better f1 score than the GaussianNB using PCA for my project.</p>
+<p><strong>So , precision, recall and f1 values provided by GaussianNB classifer without using PCA is better than given by the other two classifying algorithms used</strong>.</p>
 <h4 id="Finding-out-the-features-selected-by-SelectKBest-for-GaussianNB">Finding out the features selected by SelectKBest for GaussianNB<a class="anchor-link" href="#Finding-out-the-features-selected-by-SelectKBest-for-GaussianNB">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Obtaining the boolean list showing selected features</span>
@@ -15612,7 +15693,7 @@ The following table shows the feature selected along with its corresponding scor
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[41]:</div>
+<div class="prompt output_prompt">Out[42]:</div>
 
 
 
@@ -15703,7 +15784,7 @@ The following table shows the feature selected along with its corresponding scor
 <h3 id="4.-Evaluation">4. Evaluation<a class="anchor-link" href="#4.-Evaluation">&#182;</a></h3><h4 id="Validation">Validation<a class="anchor-link" href="#Validation">&#182;</a></h4><p><strong>Model validation</strong> is defined as the process where a trained model is evaluated with a testing data set. The testing data set is a separate portion of the same data set from which the training set is derived. The main purpose of using the testing data set is to test the generalization ability of a trained model. Model validation is carried out after model training.</p>
 <p>Training the prediction model and testing it on the same dataset used for testing is a classic mistake. A model that would just repeat the labels of the samples that it has just seen would have a perfect score but would fail to predict anything useful on yet-unseen data. This situation is called overfitting. To avoid it, it is common practice when performing a (supervised) machine learning experiment to hold out part of the available data as a test set.</p>
 <p>In this project for validation, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.ShuffleSplit.html">StratifiedShuffleSplit</a> is used because the dataset used is very small. This method does a "Random permutation cross-validatoion".</p>
-<p>'StratifiedShuffleSplit' is used when there are few observations in our data that we are trying to predict (as is the case with this dataset). Instead of specifying an explicit testing and training data split (that is fixed), we randomly 'shuffle' through our data creating testing and training data.</p>
+<p>'StratifiedShuffleSplit' is used when there are few observations in our data that we are trying to predict (as is the case with this dataset). Instead of specifying an explicit testing and training data split (that is fixed), we randomly 'shuffle' through our data creating testing and training data.  The stratified shuffle split is also used to handle class imbalances in the data. This is very important, especially since there are very few POIs in the data.</p>
 <p>'StratifiedShuffleSplit' will create train/validation subsets (as per the code above, it will create 100 of them). Internally, 'GridSearchCV' will estimate the models using the 100 train subsets and validate the model on the 100 validation subset. So, using the full dataset will allow the training and validation subsets to include as many POI as possible.</p>
 <p>With 146 Enron employers, 18 of which are POIs, the dataset used is both small and is imbalanced.</p>
 <h4 id="Evaluation-Metric">Evaluation Metric<a class="anchor-link" href="#Evaluation-Metric">&#182;</a></h4><p>In this project, i am trying to optimize the precision and recall so i am using the f1-score as the key measure for algorithms's performance. F1 score considers both the precision and the recall to compute the score. (Also, for 'StratifiedShuffleSplit' the n_splits parameter = 1000 is used.)</p>
@@ -15726,20 +15807,20 @@ The following table shows the feature selected along with its corresponding scor
 <p>Metric values obtained after running the <strong>tester.py</strong> file :</p>
 <table>
 <thead><tr>
-<th style="text-align:center">Algorithm used</th>
+<th>Algorithm used</th>
 <th>Accuracy</th>
-<th style="text-align:right">Precision</th>
+<th>Precision</th>
 <th>Recall</th>
 <th>f1 score</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">Gaussian Naive Bayes</td>
+<td>Gaussian Naive Bayes</td>
 <td>0.852</td>
-<td style="text-align:right">0.476</td>
+<td>0.476</td>
 <td>0.377</td>
-<td>0.421</td>
+<td>0.393</td>
 </tr>
 </tbody>
 </table>
