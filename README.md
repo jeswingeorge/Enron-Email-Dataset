@@ -23,6 +23,6 @@ In 2000, Enron was one of the largest companies in the United States. By 2002, i
 
 ***
 
-Python 2.7
+Python 2.7  
 scikit-learn 0.19.1
 
